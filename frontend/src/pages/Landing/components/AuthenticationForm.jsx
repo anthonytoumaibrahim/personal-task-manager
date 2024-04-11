@@ -70,7 +70,7 @@ const AuthenticationForm = () => {
               error={errors.fullName}
             />
             {errors.fullName && (
-              <span className="text-red-600 font-medium text-sm">
+              <span className="text-rose-600 font-medium text-sm">
                 Please enter your full name.
               </span>
             )}
@@ -88,7 +88,7 @@ const AuthenticationForm = () => {
             })}
           />
           {errors.email && (
-            <span className="text-red-600 font-medium text-sm">
+            <span className="text-rose-600 font-medium text-sm">
               Please enter a valid email address.
             </span>
           )}
@@ -105,17 +105,11 @@ const AuthenticationForm = () => {
             })}
           />
           {errors.password && (
-            <span className="text-red-600 font-medium text-sm">
+            <span className="text-rose-600 font-medium text-sm">
               Password must be at least 8 characters long.
             </span>
           )}
         </div>
-        {!isLogin && (
-          <small>
-            By signing up, I accept the Terms of Services and acknowledge the
-            Privacy Policy.
-          </small>
-        )}
         <Button type="submit" className="mt-2" loading={isLoading}>
           {isLogin ? "Login" : "Sign up"}
         </Button>

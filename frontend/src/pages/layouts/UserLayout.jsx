@@ -1,13 +1,12 @@
 import { Outlet } from "react-router-dom";
+import Header from "./components/Header";
 
 const UserLayout = () => {
   return (
     <>
-      <header className="">
-        
-      </header>
+      <Header />
 
-      <main className="container mx-auto">
+      <main className="container mx-auto mt-6">
         <Outlet />
       </main>
     </>

@@ -9,7 +9,7 @@ const Input = forwardRef(
       onBlur,
       name,
       error = false,
-      className,
+      className = "",
     },
     ref
   ) => (
@@ -21,7 +21,7 @@ const Input = forwardRef(
       type={type}
       placeholder={placeholder}
       className={`p-2 border-2 border-gray-200 hover:bg-gray-100 focus:border-primary-600 rounded outline-none transition-colors duration-150 ${
-        error ? "border-red-500 bg-red-50 placeholder:text-red-400" : ""
+        error ? "border-rose-500 bg-rose-50 placeholder:text-rose-400" : ""
       } ${className}`}
     />
   )
