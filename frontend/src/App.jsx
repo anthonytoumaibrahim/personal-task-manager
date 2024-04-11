@@ -1,3 +1,5 @@
+import { useSelector } from "react-redux";
+
 // React Router
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
@@ -9,6 +11,8 @@ import "react-toastify/dist/ReactToastify.css";
 import Landing from "./pages/Landing";
 
 const App = () => {
+  const tokenSelector = useSelector((state) => state.userSlice.token);
+
   return (
     <BrowserRouter>
       <ToastContainer
@@ -24,7 +28,7 @@ const App = () => {
         theme="light"
       />
       <Routes>
-        <Route index element={<Landing />} />
+        {tokenSelector ? <></> : <Route index element={<Landing />} />}
       </Routes>
     </BrowserRouter>
   );

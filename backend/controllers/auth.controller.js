@@ -1,6 +1,5 @@
 const User = require("../models/user.model");
 const jwt = require("jsonwebtoken");
-const bcrypt = require("bcrypt");
 
 const login = async (req, res) => {
   const { email, password } = req.body;
@@ -11,7 +10,8 @@ const login = async (req, res) => {
         message: "This account doesn't exist.",
       });
     }
-    const isValidPassword = bcrypt.compare(password, user.password);
+
+    const isValidPassword = await user.comparePassword(password);
     if (!isValidPassword) {
       return res.status(422).json({
         message: "Invalid credentials.",
