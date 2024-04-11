@@ -1,7 +1,19 @@
 const User = require("../models/user.model");
 const jwt = require("jsonwebtoken");
 
-const login = async (req, res) => {};
+const login = async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    const userExists = await User.findOne({ email: email });
+    if (!userExists) {
+      return res.status(422).json({
+        message: "This account doesn't exist.",
+      });
+    }
+    
+    
+  } catch (error) {}
+};
 
 const register = async (req, res) => {
   const { fullName, email, password } = req.body;

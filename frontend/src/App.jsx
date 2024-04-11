@@ -4,7 +4,7 @@ const App = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route index element={<>Hello world</>} />
+        <Route index element={<></>} />
       </Routes>
     </BrowserRouter>
   );
