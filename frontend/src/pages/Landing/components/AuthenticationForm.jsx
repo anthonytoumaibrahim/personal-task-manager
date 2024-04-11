@@ -2,6 +2,8 @@
 import { useState } from "react";
 import { useRequest } from "../../../core/hooks/useRequest";
 import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { useForm } from "react-hook-form";
 
 // Components
 import Input from "../../../components/Input";
@@ -9,30 +11,23 @@ import Button from "../../../components/Button";
 
 const AuthenticationForm = () => {
   const sendRequest = useRequest();
+  const dispatch = useDispatch();
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm();
+
   const [isLogin, setIsLogin] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [authInfo, setAuthInfo] = useState({
-    fullName: "",
-    email: "",
-    password: "",
-  });
 
-  const handleInput = (type, value) => {
-    setAuthInfo({
-      ...authInfo,
-      [type]: value,
-    });
-  };
-
-  const submit = async (e) => {
-    e.preventDefault();
+  const submit = async (data) => {
     setIsLoading(true);
     const path = "/auth" + (isLogin ? "/login" : "/register");
-    await sendRequest("POST", path, authInfo)
+    await sendRequest("POST", path, data)
       .then((response) => {})
-      .catch((error) => {
-        toast.error("Sorry, something went wrong.");
-      })
+      .catch((error) => toast.error("Sorry, something went wrong."))
       .finally(() => setIsLoading(false));
   };
 
@@ -41,27 +36,31 @@ const AuthenticationForm = () => {
       <h5 className="font-medium text-center">
         {isLogin ? "Login" : "Sign up"} to continue
       </h5>
-      <form action="" className="flex flex-col gap-2" onSubmit={submit}>
+      <form
+        action=""
+        className="flex flex-col gap-2"
+        onSubmit={handleSubmit(submit)}
+      >
         {!isLogin && (
-          <Input
-            type="text"
-            placeholder="Enter your full name"
-            value={authInfo.fullName}
-            onChange={(value) => handleInput("fullName", value)}
-          />
+          <div className="w-full">
+            <Input
+              type="text"
+              placeholder="Enter your full name"
+              {...register("fullName", {
+                required: true,
+              })}
+              className="w-full"
+              error={errors.fullName}
+            />
+            {errors.fullName && (
+              <span className="text-red-600 font-medium text-sm">
+                Please enter your full name.
+              </span>
+            )}
+          </div>
         )}
-        <Input
-          type="email"
-          placeholder="Enter your email"
-          value={authInfo.email}
-          onChange={(value) => handleInput("email", value)}
-        />
-        <Input
-          type="password"
-          placeholder="Enter your password"
-          value={authInfo.password}
-          onChange={(value) => handleInput("password", value)}
-        />
+        <Input type="email" placeholder="Enter your email" />
+        <Input type="password" placeholder="Enter your password" />
         {!isLogin && (
           <small>
             By signing up, I accept the Terms of Services and acknowledge the

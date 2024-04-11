@@ -10,12 +10,15 @@ const userSchema = mongoose.Schema(
     email: {
       type: String,
       unique: true,
-      validate: (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value),
+      validate: [
+        (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value),
+        "Please enter a valid email address.",
+      ],
       require: "Email address is required.",
     },
     password: {
       type: String,
-      min: [8, 'Password needs to be at least 8 characters long.']
+      min: [8, "Password needs to be at least 8 characters long."],
     },
   },
   {
