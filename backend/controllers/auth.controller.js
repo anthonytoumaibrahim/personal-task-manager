@@ -1,18 +1,32 @@
 const User = require("../models/user.model");
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
 
 const login = async (req, res) => {
   const { email, password } = req.body;
   try {
-    const userExists = await User.findOne({ email: email });
-    if (!userExists) {
+    const user = await User.findOne({ email: email });
+    if (!user) {
       return res.status(422).json({
         message: "This account doesn't exist.",
       });
     }
-    
-    
-  } catch (error) {}
+    const isValidPassword = bcrypt.compare(password, user.password);
+    if (!isValidPassword) {
+      return res.status(422).json({
+        message: "Invalid credentials.",
+      });
+    }
+
+    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET);
+
+    return res.status(200).json({
+      user,
+      token,
+    });
+  } catch (error) {
+    return res.status(500).json(error);
+  }
 };
 
 const register = async (req, res) => {
@@ -39,10 +53,7 @@ const register = async (req, res) => {
       token: token,
     });
   } catch (error) {
-    console.log(error);
-    return res.status(500).json({
-      message: error,
-    });
+    return res.status(500).json(error);
   }
 };
 

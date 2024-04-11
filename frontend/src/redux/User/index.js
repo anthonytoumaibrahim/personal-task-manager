@@ -6,7 +6,7 @@ import {
 } from "../../core/tools/local/user";
 
 const initState = {
-  token: getLocalUser().token ?? null,
+  token: getLocalUser()?.token ?? null,
 };
 
 export const userSlice = createSlice({

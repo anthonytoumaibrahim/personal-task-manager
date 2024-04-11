@@ -4,6 +4,7 @@ import { useRequest } from "../../../core/hooks/useRequest";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 
 // Components
 import Input from "../../../components/Input";
@@ -11,11 +12,13 @@ import Button from "../../../components/Button";
 
 const AuthenticationForm = () => {
   const sendRequest = useRequest();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const {
     register,
     handleSubmit,
     watch,
+    reset,
     formState: { errors },
   } = useForm();
 
@@ -26,8 +29,22 @@ const AuthenticationForm = () => {
     setIsLoading(true);
     const path = "/auth" + (isLogin ? "/login" : "/register");
     await sendRequest("POST", path, data)
-      .then((response) => {})
-      .catch((error) => toast.error("Sorry, something went wrong."))
+      .then((response) => {
+        const { user, token } = response?.data || {};
+        if (user) {
+          dispatch({
+            type: "userSlice/addUser",
+            payload: {
+              token: token,
+            },
+          });
+          navigate("/");
+        }
+      })
+      .catch((error) => {
+        const { message } = error?.response?.data || {};
+        toast.error(message ?? "Sorry, something went wrong.");
+      })
       .finally(() => setIsLoading(false));
   };
 
@@ -42,7 +59,7 @@ const AuthenticationForm = () => {
         onSubmit={handleSubmit(submit)}
       >
         {!isLogin && (
-          <div className="w-full">
+          <div>
             <Input
               type="text"
               placeholder="Enter your full name"
@@ -59,8 +76,40 @@ const AuthenticationForm = () => {
             )}
           </div>
         )}
-        <Input type="email" placeholder="Enter your email" />
-        <Input type="password" placeholder="Enter your password" />
+        <div>
+          <Input
+            className="w-full"
+            type="email"
+            placeholder="Enter your email"
+            error={errors.email}
+            {...register("email", {
+              required: true,
+              pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/i,
+            })}
+          />
+          {errors.email && (
+            <span className="text-red-600 font-medium text-sm">
+              Please enter a valid email address.
+            </span>
+          )}
+        </div>
+        <div>
+          <Input
+            className="w-full"
+            type="password"
+            placeholder="Enter your password"
+            error={errors.password}
+            {...register("password", {
+              required: true,
+              minLength: 8,
+            })}
+          />
+          {errors.password && (
+            <span className="text-red-600 font-medium text-sm">
+              Password must be at least 8 characters long.
+            </span>
+          )}
+        </div>
         {!isLogin && (
           <small>
             By signing up, I accept the Terms of Services and acknowledge the
@@ -74,7 +123,10 @@ const AuthenticationForm = () => {
       <Button
         link={true}
         className="text-sm"
-        onClick={() => setIsLogin(!isLogin)}
+        onClick={() => {
+          setIsLogin(!isLogin);
+          reset();
+        }}
       >
         {isLogin ? "Don't have an account?" : "Already have an account?"}
       </Button>
