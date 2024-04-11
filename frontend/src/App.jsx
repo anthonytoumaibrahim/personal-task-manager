@@ -9,6 +9,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 // Pages
 import Landing from "./pages/Landing";
+import NotFound from "./pages/NotFound";
 
 const App = () => {
   const tokenSelector = useSelector((state) => state.userSlice.token);
@@ -29,6 +30,7 @@ const App = () => {
       />
       <Routes>
         {tokenSelector ? <></> : <Route index element={<Landing />} />}
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
   );

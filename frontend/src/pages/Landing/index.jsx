@@ -1,5 +1,5 @@
 // Vectors
-import Chart from "../../components/vectors/Chart";
+import Chart from "./vectors/Chart";
 
 // Components
 import AuthenticationForm from "./components/AuthenticationForm";
