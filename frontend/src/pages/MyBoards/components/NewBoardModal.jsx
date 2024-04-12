@@ -18,7 +18,7 @@ const NewBoardModal = ({ open = false, handleClose = () => {} }) => {
 
   const submit = async (data) => {
     setIsLoading(true);
-    sendRequest("POST", "/board/create", data)
+    sendRequest("POST", "/board/", data)
       .then((response) => {})
       .catch((error) => {
         const { message } = error?.response?.data;

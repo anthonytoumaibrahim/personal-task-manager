@@ -2,6 +2,10 @@ const mongoose = require("mongoose");
 
 const boardSchema = mongoose.Schema({
   name: String,
+  user_id: {
+    type: mongoose.Types.ObjectId,
+    ref: "User",
+  },
 });
 
 const taskSchema = mongoose.Schema({
