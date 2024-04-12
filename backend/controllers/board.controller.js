@@ -3,7 +3,7 @@ const { Board, Column, Task } = require("../models/board.model");
 const getBoards = async (req, res) => {
   const user = req.user;
   try {
-    const boards = await Board.find({ owner: user._id });
+    const boards = await Board.find({ owner: user._id }).select("-columns");
 
     return res.json({
       boards: boards,
