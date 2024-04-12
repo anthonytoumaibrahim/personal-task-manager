@@ -14,6 +14,7 @@ import UserLayout from "./pages/layouts/UserLayout";
 import Landing from "./pages/Landing";
 import NotFound from "./pages/NotFound";
 import Dashboard from "./pages/Dashboard";
+import MyBoards from "./pages/MyBoards";
 
 const App = () => {
   const tokenSelector = useSelector((state) => state.userSlice.token);
@@ -36,6 +37,7 @@ const App = () => {
         {tokenSelector ? (
           <Route path="/" element={<UserLayout />}>
             <Route index element={<Dashboard />} />
+            <Route path="boards" element={<MyBoards />} />
           </Route>
         ) : (
           <Route index element={<Landing />} />
