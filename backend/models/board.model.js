@@ -3,10 +3,6 @@ const mongoose = require("mongoose");
 const tagSchema = mongoose.Schema(
   {
     name: String,
-    task: {
-      type: mongoose.Types.ObjectId,
-      ref: "Task",
-    },
   },
   {
     timestamps: true,
@@ -17,10 +13,6 @@ const attachmentSchema = mongoose.Schema(
   {
     file: String,
     caption: String,
-    task: {
-      type: mongoose.Types.ObjectId,
-      ref: "Task",
-    },
   },
   {
     timestamps: true,
@@ -34,10 +26,8 @@ const taskSchema = mongoose.Schema(
       type: String,
       maxLength: 40,
     },
-    boardColumn: {
-      type: mongoose.Types.ObjectId,
-      ref: "BoardColumn",
-    },
+    attachments: [attachmentSchema],
+    tags: [tagSchema],
   },
   {
     timestamps: true,
