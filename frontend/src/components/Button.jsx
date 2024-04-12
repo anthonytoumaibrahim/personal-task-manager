@@ -20,7 +20,7 @@ const Button = ({
               color === "primary"
                 ? "bg-primary-600 hover:bg-primary-700"
                 : color === "error"
-                ? "bg-rose-600 hover:bg-rose-700"
+                ? "bg-rose-600 hover:bg-rose-800"
                 : ""
             } transition-colors duration-150 text-white disabled:opacity-50 disabled:cursor-not-allowed`
       } ${className}`}
