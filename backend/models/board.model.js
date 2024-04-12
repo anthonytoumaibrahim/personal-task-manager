@@ -8,7 +8,7 @@ const taskSchema = mongoose.Schema({
   title: String,
   description: {
     type: String,
-    maxLength: 155,
+    maxLength: 40,
   },
   board: {
     type: mongoose.Types.ObjectId,

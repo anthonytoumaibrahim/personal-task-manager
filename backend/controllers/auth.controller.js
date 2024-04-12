@@ -18,7 +18,7 @@ const login = async (req, res) => {
       });
     }
 
-    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET);
+    const token = jwt.sign({ _id: user.id }, process.env.JWT_SECRET);
 
     return res.status(200).json({
       user,
@@ -46,7 +46,7 @@ const register = async (req, res) => {
     });
 
     // JWT
-    const token = jwt.sign({ id: newUser.id }, process.env.JWT_SECRET);
+    const token = jwt.sign({ _id: newUser.id }, process.env.JWT_SECRET);
 
     return res.status(201).json({
       user: newUser,

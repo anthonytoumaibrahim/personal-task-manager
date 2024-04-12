@@ -21,14 +21,15 @@ const Button = ({
     },
     error: {
       filled: "bg-rose-600 hover:bg-rose-700 text-white border-transparent",
-      outlined: "border-rose-600 hover:border-rose-700",
+      outlined:
+        "text-rose-600 border-rose-600 hover:bg-rose-600 hover:text-white",
     },
   };
 
   return (
     <button
       type={type}
-      className={`inline-flex items-center gap-2 ${
+      className={`inline-flex items-center justify-center gap-2 ${
         link
           ? "link"
           : `px-4 py-2 rounded font-medium border-2 ${buttonClass[color][fillType]} transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed`

@@ -11,11 +11,16 @@ app.use(cors());
 const { connect } = require("./config/mongoDb.config");
 
 // Routes
-// const userRouter = require("./routes/user.routes");
-// app.use("/users", userRouter);
-
 const authRouter = require("./routes/auth.routes");
 app.use("/auth", authRouter);
+
+const authMiddleware = require("./middlewares/auth.middleware");
+
+const userRouter = require("./routes/user.routes");
+app.use("/user", authMiddleware, userRouter);
+
+const boardRouter = require("./routes/board.routes");
+app.use("/board", authMiddleware, boardRouter);
 
 // Server
 const port = process.env.PORT;

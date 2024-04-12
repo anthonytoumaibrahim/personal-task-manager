@@ -23,6 +23,7 @@ const App = () => {
     <BrowserRouter>
       <ToastContainer
         position="top-right"
+        className="z-50"
         autoClose={3000}
         hideProgressBar={false}
         newestOnTop={true}
