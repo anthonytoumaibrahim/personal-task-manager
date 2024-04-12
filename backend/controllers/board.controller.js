@@ -18,7 +18,10 @@ const getBoards = async (req, res) => {
 const getBoard = async (req, res) => {
   const { boardId } = req.params;
   try {
-    const board = await Board.findById(boardId).populate("columns");
+    const board = await Board.findById(boardId).populate({
+      path: "columns",
+      populate: "tasks",
+    });
 
     if (!board) {
       return res.status(422).json({
@@ -91,4 +94,36 @@ const addColumn = async (req, res) => {
   }
 };
 
-module.exports = { getBoards, getBoard, createBoard, addColumn };
+const addTask = async (req, res) => {
+  const { columnId } = req.params;
+  const { title, description } = req.body;
+  try {
+    const column = await Column.findById(columnId);
+
+    if (!column) {
+      return res.status(422).json({
+        message: "Board not found.",
+      });
+    }
+
+    const newTask = new Task({
+      title: title,
+      description: description,
+      column: columnId,
+    });
+    const savedTask = await newTask.save();
+
+    column.tasks.push(savedTask._id);
+    await column.save();
+
+    return res.json({
+      task: savedTask,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Internal Server Error.",
+    });
+  }
+};
+
+module.exports = { getBoards, getBoard, createBoard, addColumn, addTask };

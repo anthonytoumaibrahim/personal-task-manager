@@ -7,7 +7,7 @@ const taskSchema = mongoose.Schema(
       type: String,
       maxLength: 40,
     },
-    boardColumn: {
+    column: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Column",
     },
@@ -24,6 +24,7 @@ const columnSchema = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Board",
     },
+    tasks: [{ type: mongoose.Schema.Types.ObjectId, ref: "Task" }],
   },
   {
     timestamps: true,
