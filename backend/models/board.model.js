@@ -1,49 +1,72 @@
 const mongoose = require("mongoose");
 
-const boardSchema = mongoose.Schema({
-  name: String,
-  user_id: {
-    type: mongoose.Types.ObjectId,
-    ref: "User",
+const tagSchema = mongoose.Schema(
+  {
+    name: String,
+    task: {
+      type: mongoose.Types.ObjectId,
+      ref: "Task",
+    },
   },
-});
+  {
+    timestamps: true,
+  }
+);
 
-const boardColumnSchema = mongoose.Schema({
-  name: String,
-  board_id: {
-    type: mongoose.Types.ObjectId,
-    ref: "Board",
+const attachmentSchema = mongoose.Schema(
+  {
+    file: String,
+    caption: String,
+    task: {
+      type: mongoose.Types.ObjectId,
+      ref: "Task",
+    },
   },
-});
+  {
+    timestamps: true,
+  }
+);
 
-const taskSchema = mongoose.Schema({
-  title: String,
-  description: {
-    type: String,
-    maxLength: 40,
+const taskSchema = mongoose.Schema(
+  {
+    title: String,
+    description: {
+      type: String,
+      maxLength: 40,
+    },
+    boardColumn: {
+      type: mongoose.Types.ObjectId,
+      ref: "BoardColumn",
+    },
   },
-  boardColumn: {
-    type: mongoose.Types.ObjectId,
-    ref: "BoardColumn",
-  },
-});
+  {
+    timestamps: true,
+  }
+);
 
-const tagSchema = mongoose.Schema({
-  name: String,
-  task: {
-    type: mongoose.Types.ObjectId,
-    ref: "Task",
+const boardColumnSchema = mongoose.Schema(
+  {
+    name: String,
+    tasks: [taskSchema],
   },
-});
+  {
+    timestamps: true,
+  }
+);
 
-const attachmentSchema = mongoose.Schema({
-  file: String,
-  caption: String,
-  task: {
-    type: mongoose.Types.ObjectId,
-    ref: "Task",
+const boardSchema = mongoose.Schema(
+  {
+    name: String,
+    user_id: {
+      type: mongoose.Types.ObjectId,
+      ref: "User",
+    },
+    columns: [boardColumnSchema],
   },
-});
+  {
+    timestamps: true,
+  }
+);
 
 const Board = mongoose.model("Board", boardSchema);
 const BoardColumn = mongoose.model("BoardColumn", boardColumnSchema);
