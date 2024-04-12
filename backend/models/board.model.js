@@ -1,24 +1,5 @@
 const mongoose = require("mongoose");
 
-const tagSchema = mongoose.Schema(
-  {
-    name: String,
-  },
-  {
-    timestamps: true,
-  }
-);
-
-const attachmentSchema = mongoose.Schema(
-  {
-    file: String,
-    caption: String,
-  },
-  {
-    timestamps: true,
-  }
-);
-
 const taskSchema = mongoose.Schema(
   {
     title: String,
@@ -26,18 +7,23 @@ const taskSchema = mongoose.Schema(
       type: String,
       maxLength: 40,
     },
-    attachments: [attachmentSchema],
-    tags: [tagSchema],
+    boardColumn: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Column",
+    },
   },
   {
     timestamps: true,
   }
 );
 
-const boardColumnSchema = mongoose.Schema(
+const columnSchema = mongoose.Schema(
   {
     name: String,
-    tasks: [taskSchema],
+    board: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Board",
+    },
   },
   {
     timestamps: true,
@@ -47,27 +33,23 @@ const boardColumnSchema = mongoose.Schema(
 const boardSchema = mongoose.Schema(
   {
     name: String,
-    user_id: {
-      type: mongoose.Types.ObjectId,
+    owner: {
+      type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
-    columns: [boardColumnSchema],
+    columns: [{ type: mongoose.Schema.Types.ObjectId, ref: "Column" }],
   },
   {
     timestamps: true,
   }
 );
 
-const Board = mongoose.model("Board", boardSchema);
-const BoardColumn = mongoose.model("BoardColumn", boardColumnSchema);
 const Task = mongoose.model("Task", taskSchema);
-const Tag = mongoose.model("Tag", tagSchema);
-const Attachment = mongoose.model("Attachment", attachmentSchema);
+const Column = mongoose.model("Column", columnSchema);
+const Board = mongoose.model("Board", boardSchema);
 
 module.exports = {
   Board,
-  BoardColumn,
+  Column,
   Task,
-  Tag,
-  Attachment,
 };
