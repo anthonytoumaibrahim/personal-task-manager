@@ -8,15 +8,23 @@ const boardSchema = mongoose.Schema({
   },
 });
 
+const boardColumnSchema = mongoose.Schema({
+  name: String,
+  board_id: {
+    type: mongoose.Types.ObjectId,
+    ref: "Board",
+  },
+});
+
 const taskSchema = mongoose.Schema({
   title: String,
   description: {
     type: String,
     maxLength: 40,
   },
-  board: {
+  boardColumn: {
     type: mongoose.Types.ObjectId,
-    ref: "Board",
+    ref: "BoardColumn",
   },
 });
 
@@ -38,12 +46,14 @@ const attachmentSchema = mongoose.Schema({
 });
 
 const Board = mongoose.model("Board", boardSchema);
+const BoardColumn = mongoose.model("BoardColumn", boardColumnSchema);
 const Task = mongoose.model("Task", taskSchema);
 const Tag = mongoose.model("Tag", tagSchema);
 const Attachment = mongoose.model("Attachment", attachmentSchema);
 
 module.exports = {
   Board,
+  BoardColumn,
   Task,
   Tag,
   Attachment,

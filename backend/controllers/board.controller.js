@@ -15,6 +15,10 @@ const getBoards = async (req, res) => {
   }
 };
 
+const getBoard = async (req, res) => {
+  
+}
+
 const createBoard = async (req, res) => {
   const { _id } = req.user;
   const { name } = req.body;
@@ -26,7 +30,7 @@ const createBoard = async (req, res) => {
     return res.status(201).json({
       success: true,
       message: "Board has been created.",
-      id: newBoard.id,
+      new_board: newBoard,
     });
   } catch (error) {
     return res.status(500).json({

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useRequest } from "../../../core/hooks/useRequest";
 import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
 
 import Modal from "../../../components/Modal";
 import Input from "../../../components/Input";
@@ -14,12 +15,21 @@ const NewBoardModal = ({ open = false, handleClose = () => {} }) => {
     formState: { errors },
   } = useForm();
   const sendRequest = useRequest();
+  const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
 
   const submit = async (data) => {
     setIsLoading(true);
     sendRequest("POST", "/board/", data)
-      .then((response) => {})
+      .then((response) => {
+        const { message, new_board } = response.data;
+        toast.success(message);
+        dispatch({
+          type: "boardsSlice/addBoard",
+          payload: new_board,
+        });
+        handleClose();
+      })
       .catch((error) => {
         const { message } = error?.response?.data;
         toast.error(message ?? "Sorry, something went wrong.");
