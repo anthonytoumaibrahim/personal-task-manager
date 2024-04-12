@@ -22,8 +22,12 @@ const NewColumnModal = ({ boardId, open = false, handleClose = () => {} }) => {
     setIsLoading(true);
     sendRequest("POST", `/board/${boardId}/add-column`, data)
       .then((response) => {
-        const { message } = response.data;
+        const { message, column } = response.data;
         toast.success(message);
+        dispatch({
+          type: "boardSlice/addColumn",
+          payload: column,
+        });
         handleClose();
       })
       .catch((error) => {
