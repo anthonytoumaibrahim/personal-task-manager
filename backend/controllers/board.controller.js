@@ -166,6 +166,27 @@ const addTask = async (req, res) => {
   }
 };
 
+const updateTask = async (req, res) => {
+  const { taskId } = req.params;
+  const { title, description } = req.body;
+  try {
+    const updatedTask = await Task.findByIdAndUpdate(taskId, {
+      title: title,
+      description: description,
+    });
+
+    return res.json({
+      success: true,
+      message: "Updated successfully.",
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      message: "Internal Server Error.",
+    });
+  }
+};
+
 module.exports = {
   getBoards,
   getBoard,
@@ -173,4 +194,5 @@ module.exports = {
   addColumn,
   addTag,
   addTask,
+  updateTask,
 };

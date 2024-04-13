@@ -51,7 +51,6 @@ const NewTask = ({ columnId = null }) => {
           className="flex flex-col gap-1"
         >
           <Input
-            as="textarea"
             placeholder="Enter your task..."
             className="w-full"
             error={errors.title}
@@ -60,14 +59,6 @@ const NewTask = ({ columnId = null }) => {
               maxLength: 40,
             })}
           />
-          <Button
-            type="submit"
-            small={true}
-            loading={isLoading}
-            className="ml-auto"
-          >
-            Add
-          </Button>
         </form>
       )}
     </div>

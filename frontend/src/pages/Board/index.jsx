@@ -78,7 +78,7 @@ const Board = () => {
           return (
             <div
               key={_id}
-              className="p-4 h-[420px] bg-primary-50/40 rounded border border-gray-200"
+              className="p-4 h-[420px] overflow-auto bg-primary-50/40 rounded border border-gray-200"
             >
               <h4 className="mb-2">{name}</h4>
               <NewTask columnId={_id} />

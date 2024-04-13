@@ -1,5 +1,6 @@
 import { useSelector, useDispatch } from "react-redux";
 import { useForm } from "react-hook-form";
+import { useRequest } from "../../../core/hooks/useRequest";
 
 import Modal from "../../../components/Modal";
 import Input from "../../../components/Input";
@@ -11,6 +12,8 @@ const TaskModal = ({
   taskId = null,
   handleClose = () => {},
 }) => {
+  const sendRequest = useRequest();
+  const dispatch = useDispatch();
   const taskSelector = useSelector(
     (state) =>
       state.boardSlice?.columns
@@ -24,7 +27,22 @@ const TaskModal = ({
   } = useForm();
 
   const saveTask = async (data) => {
-    console.log(data);
+    sendRequest("POST", `/board/${taskId}/update-task`, data)
+      .then((response) => {
+        const { success, message } = response.data;
+        if (success) {
+          dispatch({
+            type: "boardSlice/updateTask",
+            payload: {
+              id: columnId,
+              taskId: taskId,
+              data: data,
+            },
+          });
+          handleClose();
+        }
+      })
+      .catch((error) => console.log(error));
   };
 
   return (
@@ -51,7 +69,6 @@ const TaskModal = ({
           error={errors.description}
           {...register("description", {
             value: taskSelector?.description,
-            required: true,
             maxLength: 150,
           })}
         />
