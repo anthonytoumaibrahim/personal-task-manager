@@ -7,7 +7,7 @@ import NewColumnModal from "./components/NewColumnModal";
 import TaskModal from "./components/TaskModal";
 import NewTask from "./components/NewTask";
 import Button from "../../components/Button";
-import { FaTableColumns, FaPlus } from "react-icons/fa6";
+import { FaTableColumns } from "react-icons/fa6";
 
 const Board = () => {
   const navigate = useNavigate();
@@ -47,17 +47,19 @@ const Board = () => {
         open={isModalOpen}
         handleClose={() => setIsModalOpen(false)}
       />
-      <TaskModal
-        columnId={openedTask.columnId}
-        open={openedTask.taskId ? true : false}
-        taskId={openedTask.taskId}
-        handleClose={() =>
-          setOpenedTask({
-            columnId: null,
-            taskId: null,
-          })
-        }
-      />
+      {openedTask.taskId && (
+        <TaskModal
+          columnId={openedTask.columnId}
+          open={true}
+          taskId={openedTask.taskId}
+          handleClose={() =>
+            setOpenedTask({
+              columnId: null,
+              taskId: null,
+            })
+          }
+        />
+      )}
       <div className="flex justify-between items-center mb-4">
         <h2>{boardSelector.name}</h2>
         <Button
@@ -79,29 +81,27 @@ const Board = () => {
               className="p-4 h-[420px] bg-primary-50/40 rounded border border-gray-200"
             >
               <h4 className="mb-2">{name}</h4>
-              <Button link={true} icon={FaPlus}>
-                Add Task
-              </Button>
               <NewTask columnId={_id} />
 
-              {column?.tasks?.map((task) => {
-                const { _id, title, description } = task;
-
-                return (
-                  <div
-                    key={_id}
-                    className="p-2 bg-white rounded shadow"
-                    onClick={() =>
-                      setOpenedTask({
-                        columnId: column._id,
-                        taskId: _id,
-                      })
-                    }
-                  >
-                    <p className="font-medium">{title}</p>
-                  </div>
-                );
-              })}
+              <div className="flex flex-col gap-2">
+                {column?.tasks?.map((task) => {
+                  const { _id, title, description } = task;
+                  return (
+                    <div
+                      key={_id}
+                      className="p-2 bg-white rounded shadow cursor-pointer transition-shadow duration-150 hover:shadow-md"
+                      onClick={() =>
+                        setOpenedTask({
+                          columnId: column._id,
+                          taskId: _id,
+                        })
+                      }
+                    >
+                      <p className="font-medium">{title}</p>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           );
         })}

@@ -13,10 +13,11 @@ const taskSchema = mongoose.Schema(
     title: {
       type: String,
       required: true,
+      maxLength: 40,
     },
     description: {
       type: String,
-      maxLength: 40,
+      maxLength: 150,
     },
     column: {
       type: mongoose.Schema.Types.ObjectId,

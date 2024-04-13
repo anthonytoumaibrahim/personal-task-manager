@@ -6,6 +6,7 @@ import { useDispatch } from "react-redux";
 
 import Input from "../../../components/Input";
 import Button from "../../../components/Button";
+import { FaPlus } from "react-icons/fa6";
 
 const NewTask = ({ columnId = null }) => {
   const sendRequest = useRequest();
@@ -16,6 +17,7 @@ const NewTask = ({ columnId = null }) => {
     reset,
     formState: { errors },
   } = useForm();
+  const [showForm, setShowForm] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const addTask = async (data) => {
@@ -31,36 +33,44 @@ const NewTask = ({ columnId = null }) => {
           },
         });
         reset();
+        setShowForm(false);
       })
       .catch((error) => toast.error("Something went wrong."))
       .finally(() => setIsLoading(false));
   };
 
   return (
-    <form
-      action=""
-      onSubmit={handleSubmit(addTask)}
-      className="flex flex-col gap-1"
-    >
-      <Input
-        as="textarea"
-        placeholder="Enter your task..."
-        className="w-full"
-        error={errors.title}
-        {...register("title", {
-          required: true,
-          maxLength: 40,
-        })}
-      />
-      <Button
-        type="submit"
-        small={true}
-        loading={isLoading}
-        className="ml-auto"
-      >
-        Add
+    <div className="mb-2">
+      <Button link={true} icon={FaPlus} onClick={() => setShowForm(!showForm)}>
+        Add Task
       </Button>
-    </form>
+      {showForm && (
+        <form
+          action=""
+          onSubmit={handleSubmit(addTask)}
+          className="flex flex-col gap-1"
+        >
+          <Input
+            as="textarea"
+            placeholder="Enter your task..."
+            className="w-full"
+            error={errors.title}
+            {...register("title", {
+              required: true,
+              maxLength: 40,
+            })}
+          />
+          <Button
+            type="submit"
+            small={true}
+            loading={isLoading}
+            className="ml-auto"
+          >
+            Add
+          </Button>
+        </form>
+      )}
+    </div>
   );
 };
 
