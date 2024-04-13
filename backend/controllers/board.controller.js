@@ -187,6 +187,29 @@ const updateTask = async (req, res) => {
   }
 };
 
+const uploadAttachment = async (req, res) => {
+  const { taskId } = req.params;
+  const { files } = req.files;
+
+  const task = await Task.findById(taskId);
+  if (!task) {
+    return res.status(422).json({
+      message: "Task not found.",
+    });
+  }
+
+  // const newAttachment = new Attachment({
+  //   url: "",
+  //   task: taskId,
+  // });
+  // await newAttachment.save();
+
+  return res.json({
+    // attachment: newAttachment,
+    files: files,
+  });
+};
+
 module.exports = {
   getBoards,
   getBoard,
@@ -195,4 +218,5 @@ module.exports = {
   addTag,
   addTask,
   updateTask,
+  uploadAttachment,
 };

@@ -11,6 +11,7 @@ const CustomNavLink = ({ to = "/", className = "", children }) => {
             : "text-black"
         } ${className}`
       }
+      end
     >
       {children}
     </NavLink>

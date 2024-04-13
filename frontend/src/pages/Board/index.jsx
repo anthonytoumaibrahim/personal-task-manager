@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useRequest } from "../../core/hooks/useRequest";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -61,7 +61,9 @@ const Board = () => {
         />
       )}
       <div className="flex justify-between items-center mb-4">
-        <h2>{boardSelector.name}</h2>
+        <div className="flex items-center gap-2">
+          <Link to="/boards">My Boards</Link> / <h3>{boardSelector.name}</h3>
+        </div>
         <Button
           fillType="outlined"
           onClick={() => setIsModalOpen(true)}

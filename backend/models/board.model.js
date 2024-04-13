@@ -1,12 +1,18 @@
 const mongoose = require("mongoose");
 
-const attachmentSchema = mongoose.Schema({
-  url: {
-    type: String,
-    required: true,
+const attachmentSchema = mongoose.Schema(
+  {
+    filename: String,
+    url: {
+      type: String,
+      required: true,
+    },
+    task: { type: mongoose.Schema.Types.ObjectId, ref: "Task" },
   },
-  task: { type: mongoose.Schema.Types.ObjectId, ref: "Task" },
-});
+  {
+    timestamps: true,
+  }
+);
 
 const taskSchema = mongoose.Schema(
   {
