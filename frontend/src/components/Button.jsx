@@ -3,6 +3,7 @@ import Spinner from "./Spinner";
 const Button = ({
   type = "button",
   link = false,
+  small = false,
   className = "",
   onClick = () => {},
   loading = false,
@@ -32,7 +33,7 @@ const Button = ({
       className={`inline-flex items-center justify-center gap-2 ${
         link
           ? "link"
-          : `px-4 py-2 rounded font-medium border-2 ${buttonClass[color][fillType]} transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed`
+          : `${small ? 'px-2 py-1' : 'px-4 py-2'} rounded font-medium border-2 ${buttonClass[color][fillType]} transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed`
       } ${className}`}
       onClick={() => onClick()}
       disabled={loading ? true : disabled}

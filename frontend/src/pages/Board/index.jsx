@@ -5,8 +5,8 @@ import { useDispatch, useSelector } from "react-redux";
 
 import NewColumnModal from "./components/NewColumnModal";
 import TaskModal from "./components/TaskModal";
+import NewTask from "./components/NewTask";
 import Button from "../../components/Button";
-import Input from "../../components/Input";
 import { FaTableColumns, FaPlus } from "react-icons/fa6";
 
 const Board = () => {
@@ -17,7 +17,10 @@ const Board = () => {
   const boardSelector = useSelector((state) => state.boardSlice);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
+  const [openedTask, setOpenedTask] = useState({
+    columnId: null,
+    taskId: null,
+  });
 
   const getBoard = async () => {
     sendRequest("GET", `/board/${id}`)
@@ -33,8 +36,6 @@ const Board = () => {
       });
   };
 
-  const addTask = async () => {};
-
   useEffect(() => {
     getBoard();
   }, []);
@@ -47,8 +48,15 @@ const Board = () => {
         handleClose={() => setIsModalOpen(false)}
       />
       <TaskModal
-        open={isTaskModalOpen}
-        handleClose={() => setIsTaskModalOpen(false)}
+        columnId={openedTask.columnId}
+        open={openedTask.taskId ? true : false}
+        taskId={openedTask.taskId}
+        handleClose={() =>
+          setOpenedTask({
+            columnId: null,
+            taskId: null,
+          })
+        }
       />
       <div className="flex justify-between items-center mb-4">
         <h2>{boardSelector.name}</h2>
@@ -74,19 +82,23 @@ const Board = () => {
               <Button link={true} icon={FaPlus}>
                 Add Task
               </Button>
-              <Input
-                as="textarea"
-                placeholder="Enter your task..."
-                className="w-full"
-              />
+              <NewTask columnId={_id} />
 
               {column?.tasks?.map((task) => {
                 const { _id, title, description } = task;
 
                 return (
-                  <div key={_id} className="p-2 bg-white rounded shadow">
+                  <div
+                    key={_id}
+                    className="p-2 bg-white rounded shadow"
+                    onClick={() =>
+                      setOpenedTask({
+                        columnId: column._id,
+                        taskId: _id,
+                      })
+                    }
+                  >
                     <p className="font-medium">{title}</p>
-                    <small>{description}</small>
                   </div>
                 );
               })}
