@@ -1,8 +1,27 @@
 const mongoose = require("mongoose");
 
+const tagSchema = mongoose.Schema({
+  name: {
+    type: String,
+    maxLength: 30,
+  },
+  task: { type: mongoose.Schema.Types.ObjectId, ref: "Task" },
+});
+
+const attachmentSchema = mongoose.Schema({
+  url: {
+    type: String,
+    required: true,
+  },
+  task: { type: mongoose.Schema.Types.ObjectId, ref: "Task" },
+});
+
 const taskSchema = mongoose.Schema(
   {
-    title: String,
+    title: {
+      type: String,
+      required: true,
+    },
     description: {
       type: String,
       maxLength: 40,
@@ -11,6 +30,8 @@ const taskSchema = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Column",
     },
+    attachments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Attachment" }],
+    tags: [{ type: mongoose.Schema.Types.ObjectId, ref: "Tag" }],
   },
   {
     timestamps: true,
@@ -45,6 +66,8 @@ const boardSchema = mongoose.Schema(
   }
 );
 
+const Tag = mongoose.model("Tag", tagSchema);
+const Attachment = mongoose.model("Attachment", attachmentSchema);
 const Task = mongoose.model("Task", taskSchema);
 const Column = mongoose.model("Column", columnSchema);
 const Board = mongoose.model("Board", boardSchema);
@@ -53,4 +76,6 @@ module.exports = {
   Board,
   Column,
   Task,
+  Attachment,
+  Tag,
 };

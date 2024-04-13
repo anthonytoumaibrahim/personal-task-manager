@@ -5,7 +5,7 @@ const userSchema = mongoose.Schema(
   {
     fullName: {
       type: String,
-      require: "Full name is required.",
+      required: [true, "Full name is required."],
     },
     email: {
       type: String,
@@ -14,11 +14,11 @@ const userSchema = mongoose.Schema(
         (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value),
         "Please enter a valid email address.",
       ],
-      require: "Email address is required.",
+      required: [true, "Email address is required."],
     },
     password: {
       type: String,
-      min: [8, "Password needs to be at least 8 characters long."],
+      minLength: [8, "Password needs to be at least 8 characters long."],
     },
   },
   {
