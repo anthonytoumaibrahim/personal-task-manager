@@ -4,8 +4,10 @@ import { useRequest } from "../../core/hooks/useRequest";
 import { useDispatch, useSelector } from "react-redux";
 
 import NewColumnModal from "./components/NewColumnModal";
+import TaskModal from "./components/TaskModal";
 import Button from "../../components/Button";
-import { FaT, FaTableColumns } from "react-icons/fa6";
+import Input from "../../components/Input";
+import { FaTableColumns, FaPlus } from "react-icons/fa6";
 
 const Board = () => {
   const navigate = useNavigate();
@@ -15,6 +17,7 @@ const Board = () => {
   const boardSelector = useSelector((state) => state.boardSlice);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
 
   const getBoard = async () => {
     sendRequest("GET", `/board/${id}`)
@@ -30,6 +33,8 @@ const Board = () => {
       });
   };
 
+  const addTask = async () => {};
+
   useEffect(() => {
     getBoard();
   }, []);
@@ -40,6 +45,10 @@ const Board = () => {
         boardId={id}
         open={isModalOpen}
         handleClose={() => setIsModalOpen(false)}
+      />
+      <TaskModal
+        open={isTaskModalOpen}
+        handleClose={() => setIsTaskModalOpen(false)}
       />
       <div className="flex justify-between items-center mb-4">
         <h2>{boardSelector.name}</h2>
@@ -61,7 +70,26 @@ const Board = () => {
               key={_id}
               className="p-4 h-[420px] bg-primary-50/40 rounded border border-gray-200"
             >
-              <h4>{name}</h4>
+              <h4 className="mb-2">{name}</h4>
+              <Button link={true} icon={FaPlus}>
+                Add Task
+              </Button>
+              <Input
+                as="textarea"
+                placeholder="Enter your task..."
+                className="w-full"
+              />
+
+              {column?.tasks?.map((task) => {
+                const { _id, title, description } = task;
+
+                return (
+                  <div key={_id} className="p-2 bg-white rounded shadow">
+                    <p className="font-medium">{title}</p>
+                    <small>{description}</small>
+                  </div>
+                );
+              })}
             </div>
           );
         })}
