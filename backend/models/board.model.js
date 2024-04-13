@@ -1,13 +1,5 @@
 const mongoose = require("mongoose");
 
-const tagSchema = mongoose.Schema({
-  name: {
-    type: String,
-    maxLength: 30,
-  },
-  task: { type: mongoose.Schema.Types.ObjectId, ref: "Task" },
-});
-
 const attachmentSchema = mongoose.Schema({
   url: {
     type: String,
@@ -38,6 +30,17 @@ const taskSchema = mongoose.Schema(
   }
 );
 
+const tagSchema = mongoose.Schema({
+  name: {
+    type: String,
+    maxLength: 30,
+  },
+  board: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Board",
+  },
+});
+
 const columnSchema = mongoose.Schema(
   {
     name: String,
@@ -60,6 +63,7 @@ const boardSchema = mongoose.Schema(
       ref: "User",
     },
     columns: [{ type: mongoose.Schema.Types.ObjectId, ref: "Column" }],
+    tags: [{ type: mongoose.Schema.Types.ObjectId, ref: "Tag" }],
   },
   {
     timestamps: true,

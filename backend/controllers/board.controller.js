@@ -1,9 +1,17 @@
-const { Board, Column, Task } = require("../models/board.model");
+const {
+  Board,
+  Column,
+  Task,
+  Tag,
+  Attachment,
+} = require("../models/board.model");
 
 const getBoards = async (req, res) => {
   const user = req.user;
   try {
-    const boards = await Board.find({ owner: user._id }).select("-columns");
+    const boards = await Board.find({ owner: user._id }).select(
+      "-columns -tags"
+    );
 
     return res.json({
       boards: boards,
@@ -94,6 +102,38 @@ const addColumn = async (req, res) => {
   }
 };
 
+const addTag = async (req, res) => {
+  const { boardId } = req.params;
+  const { name } = req.body;
+  try {
+    const board = await Board.findById(boardId);
+
+    if (!board) {
+      return res.status(422).json({
+        message: "Board not found.",
+        board: boardId,
+      });
+    }
+
+    const newTag = new Tag({
+      name: name,
+    });
+    const savedTag = await newTag.save();
+
+    board.tags.push(savedTag._id);
+    await board.save();
+
+    return res.json({
+      tag: savedTag,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      message: "Internal Server Error.",
+    });
+  }
+};
+
 const addTask = async (req, res) => {
   const { columnId } = req.params;
   const { title, description } = req.body;
@@ -126,4 +166,11 @@ const addTask = async (req, res) => {
   }
 };
 
-module.exports = { getBoards, getBoard, createBoard, addColumn, addTask };
+module.exports = {
+  getBoards,
+  getBoard,
+  createBoard,
+  addColumn,
+  addTag,
+  addTask,
+};
