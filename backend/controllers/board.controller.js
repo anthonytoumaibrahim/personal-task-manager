@@ -26,10 +26,12 @@ const getBoards = async (req, res) => {
 const getBoard = async (req, res) => {
   const { boardId } = req.params;
   try {
-    const board = await Board.findById(boardId).populate({
-      path: "columns",
-      populate: "tasks",
-    });
+    const board = await Board.findById(boardId)
+      .populate("tags")
+      .populate({
+        path: "columns",
+        populate: "tasks",
+      });
 
     if (!board) {
       return res.status(422).json({
@@ -168,11 +170,30 @@ const addTask = async (req, res) => {
 
 const updateTask = async (req, res) => {
   const { taskId } = req.params;
-  const { title, description } = req.body;
+  const { title, description, boardId, tags } = req.body;
   try {
-    const updatedTask = await Task.findByIdAndUpdate(taskId, {
-      title: title,
-      description: description,
+    const task = await Task.findById(taskId);
+    task.title = title;
+    task.description = description;
+    await task.save();
+
+    const board = await Board.findById(boardId);
+
+    tags.forEach(async (tag) => {
+      const foundTag = await Tag.findOne({ name: tag });
+      if (!foundTag) {
+        const newTag = new Tag({
+          name: tag,
+          board: boardId,
+        });
+        await newTag.save();
+
+        board.tags.push(newTag._id);
+        await board.save();
+
+        task.tags.push(newTag._id);
+        await task.save();
+      }
     });
 
     return res.json({

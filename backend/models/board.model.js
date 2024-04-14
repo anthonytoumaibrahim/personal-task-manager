@@ -41,6 +41,8 @@ const tagSchema = mongoose.Schema({
   name: {
     type: String,
     maxLength: 30,
+    unique: true,
+    index: true,
   },
   board: {
     type: mongoose.Schema.Types.ObjectId,

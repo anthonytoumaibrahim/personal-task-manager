@@ -49,6 +49,7 @@ const Board = () => {
       />
       {openedTask.taskId && (
         <TaskModal
+          boardId={id}
           columnId={openedTask.columnId}
           open={true}
           taskId={openedTask.taskId}
@@ -71,6 +72,18 @@ const Board = () => {
         >
           Add Column
         </Button>
+      </div>
+
+      <div className="flex flex-wrap gap-2 items-center mb-4">
+        Tags
+        {boardSelector?.tags?.map((tag) => {
+          const { name } = tag;
+          return (
+            <Button small={true} fillType="outlined" className="border-gray-400 text-gray-400">
+              {name}
+            </Button>
+          );
+        })}
       </div>
 
       <div className="grid grid-cols-3 gap-4">

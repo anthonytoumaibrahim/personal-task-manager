@@ -7,6 +7,7 @@ import Input from "../../../components/Input";
 import Button from "../../../components/Button";
 
 const TaskModal = ({
+  boardId = null,
   columnId = null,
   open = false,
   taskId = null,
@@ -27,7 +28,11 @@ const TaskModal = ({
   } = useForm();
 
   const saveTask = async (data) => {
-    sendRequest("POST", `/board/${taskId}/update-task`, data)
+    sendRequest("POST", `/board/${taskId}/update-task`, {
+      ...data,
+      boardId: boardId,
+      tags: ["tag 1", "tag 2"],
+    })
       .then((response) => {
         const { success, message } = response.data;
         if (success) {
