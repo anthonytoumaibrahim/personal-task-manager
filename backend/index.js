@@ -10,6 +10,9 @@ app.use(cors());
 // MongoDB
 const { connect } = require("./config/mongoDb.config");
 
+// Static files
+app.use("/uploads", express.static("uploads"));
+
 // Routes
 const authRouter = require("./routes/auth.routes");
 app.use("/auth", authRouter);

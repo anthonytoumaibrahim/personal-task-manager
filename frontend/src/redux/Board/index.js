@@ -17,6 +17,24 @@ export const boardSlice = createSlice({
         .filter((column) => column._id === action.payload.id)?.[0]
         ?.tasks?.push(action.payload.task);
     },
+    setAttachments: (state, action) => {
+      const { columnId, taskId, attachments } = action.payload;
+      state.columns = state.columns.map((col) =>
+        col._id === columnId
+          ? {
+              ...col,
+              tasks: col.tasks.map((task) =>
+                task._id === taskId
+                  ? {
+                      ...task,
+                      attachments: attachments,
+                    }
+                  : task
+              ),
+            }
+          : col
+      );
+    },
     updateTask: (state, action) => {
       return {
         ...state,

@@ -12,7 +12,17 @@ const {
   uploadAttachment,
 } = require("../controllers/board.controller");
 const multer = require("multer");
-const upload = multer({ dest: "uploads/" });
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads/");
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + "_" + file.originalname);
+  },
+});
+
+const upload = multer({ storage: storage, dest: "uploads/" });
 
 router.get("/", getBoards);
 router.post("/", createBoard);
@@ -24,7 +34,7 @@ router.post("/:taskId/update-task", updateTask);
 router.post("/move-task", moveTask);
 router.post(
   "/:taskId/upload-attachment",
-  upload.array("files", 5),
+  upload.array("attachments", 5),
   uploadAttachment
 );
 

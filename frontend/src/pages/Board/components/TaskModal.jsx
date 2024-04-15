@@ -1,10 +1,13 @@
+import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useForm } from "react-hook-form";
 import { useRequest } from "../../../core/hooks/useRequest";
+import { toast } from "react-toastify";
 
 import Modal from "../../../components/Modal";
 import Input from "../../../components/Input";
 import Button from "../../../components/Button";
+import { GrAttachment } from "react-icons/gr";
 
 const TaskModal = ({
   boardId = null,
@@ -26,12 +29,13 @@ const TaskModal = ({
     handleSubmit,
     formState: { errors },
   } = useForm();
+  const [tags, setTags] = useState([]);
 
   const saveTask = async (data) => {
     sendRequest("POST", `/board/${taskId}/update-task`, {
       ...data,
       boardId: boardId,
-      tags: ["tag 1", "tag 2"],
+      tags: [],
     })
       .then((response) => {
         const { success, message } = response.data;
@@ -47,7 +51,34 @@ const TaskModal = ({
           handleClose();
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        toast.error(error);
+        console.log(error);
+      });
+  };
+
+  const handleFileUpload = (e) => {
+    const files = e.target.files;
+    const form = new FormData();
+    for (let i = 0; i < files.length; i++) {
+      form.append(`attachments`, files[i]);
+    }
+    sendRequest("POST", `/board/${taskId}/upload-attachment`, form)
+      .then((response) => {
+        const { attachments } = response.data;
+        dispatch({
+          type: "boardSlice/setAttachments",
+          payload: {
+            columnId: columnId,
+            taskId: taskId,
+            attachments: attachments,
+          },
+        });
+      })
+      .catch((error) => {
+        toast.error(error);
+        console.log(error);
+      });
   };
 
   return (
@@ -57,26 +88,56 @@ const TaskModal = ({
         className="flex flex-col gap-4"
         onSubmit={handleSubmit(saveTask)}
       >
-        <Input
-          placeholder="Task Name"
-          className="border-none text-xl font-medium w-full"
-          error={errors.title}
-          {...register("title", {
-            value: taskSelector?.title,
-            required: true,
-            maxLength: 40,
-          })}
-        />
-        <Input
-          as="textarea"
-          placeholder="Add a description..."
-          className="border-none w-full"
-          error={errors.description}
-          {...register("description", {
-            value: taskSelector?.description,
-            maxLength: 150,
-          })}
-        />
+        <div>
+          <label className="font-bold text-sm">Title</label>
+          <Input
+            placeholder="Task Name"
+            className="border-none text-xl font-medium w-full"
+            error={errors.title}
+            {...register("title", {
+              value: taskSelector?.title,
+              required: true,
+              maxLength: 40,
+            })}
+          />
+        </div>
+        <div>
+          <label className="font-bold text-sm">Description</label>
+          <Input
+            as="textarea"
+            placeholder="Add a description..."
+            className="border-none w-full"
+            error={errors.description}
+            {...register("description", {
+              value: taskSelector?.description,
+              maxLength: 150,
+            })}
+          />
+        </div>
+        <div className="flex flex-col gap-2">
+          <label className="font-bold text-sm">Attachments</label>
+          <div className="flex flex-wrap gap-2">
+            {taskSelector?.attachments?.map((file) => {
+              const { _id, filename, url } = file;
+
+              return (
+                <a
+                  key={_id}
+                  href={url}
+                  target="_blank"
+                  className="flex items-center gap-2"
+                >
+                  <GrAttachment />
+                  {filename ?? "File"}
+                </a>
+              );
+            })}
+          </div>
+        </div>
+        <div className="flex flex-col gap-2">
+          <label className="font-bold text-sm">Upload Attachments</label>
+          <input type="file" onChange={handleFileUpload} multiple />
+        </div>
         <Button className="mx-auto" type="submit">
           Save
         </Button>

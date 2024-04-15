@@ -28,7 +28,10 @@ const getBoard = async (req, res) => {
   try {
     const board = await Board.findById(boardId).populate({
       path: "columns",
-      populate: "tasks",
+      populate: {
+        path: "tasks",
+        populate: "attachments",
+      },
     });
 
     if (!board) {
@@ -235,7 +238,7 @@ const moveTask = async (req, res) => {
 
 const uploadAttachment = async (req, res) => {
   const { taskId } = req.params;
-  const { files } = req.files;
+  const attachments = req.files;
 
   const task = await Task.findById(taskId);
   if (!task) {
@@ -244,15 +247,28 @@ const uploadAttachment = async (req, res) => {
     });
   }
 
-  // const newAttachment = new Attachment({
-  //   url: "",
-  //   task: taskId,
-  // });
-  // await newAttachment.save();
+  for (let i = 0; i < attachments.length; i++) {
+    const file = attachments[i];
+    const newAttachment = new Attachment({
+      filename: file.filename,
+      url:
+        process.env.APP_URL +
+        ":" +
+        process.env.PORT +
+        "/" +
+        file.destination +
+        file.filename,
+      task: taskId,
+    });
+    await newAttachment.save();
 
+    task.attachments.push(newAttachment._id);
+    await task.save();
+  }
+
+  const newAttach = await Attachment.find({ task: task._id });
   return res.json({
-    // attachment: newAttachment,
-    files: files,
+    attachments: newAttach,
   });
 };
 
