@@ -26,12 +26,10 @@ const getBoards = async (req, res) => {
 const getBoard = async (req, res) => {
   const { boardId } = req.params;
   try {
-    const board = await Board.findById(boardId)
-      .populate("tags")
-      .populate({
-        path: "columns",
-        populate: "tasks",
-      });
+    const board = await Board.findById(boardId).populate({
+      path: "columns",
+      populate: "tasks",
+    });
 
     if (!board) {
       return res.status(422).json({
@@ -44,6 +42,7 @@ const getBoard = async (req, res) => {
       board: board,
     });
   } catch (error) {
+    console.log(error);
     return res.status(500).json({
       message: "Internal Server Error.",
     });
@@ -208,6 +207,32 @@ const updateTask = async (req, res) => {
   }
 };
 
+const moveTask = async (req, res) => {
+  const { oldColumn, newColumn, taskId } = req.body;
+  try {
+    const task = await Task.findById(taskId);
+    task.column = newColumn;
+    await task.save();
+
+    const updatedNewCol = await Column.findById(newColumn);
+    updatedNewCol.tasks.push(taskId);
+    await updatedNewCol.save();
+
+    const updatedOldCol = await Column.findById(oldColumn);
+    updatedOldCol.tasks.pull(taskId);
+    await updatedOldCol.save();
+
+    return res.json({
+      success: true,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      message: "Internal Server Error.",
+    });
+  }
+};
+
 const uploadAttachment = async (req, res) => {
   const { taskId } = req.params;
   const { files } = req.files;
@@ -239,5 +264,6 @@ module.exports = {
   addTag,
   addTask,
   updateTask,
+  moveTask,
   uploadAttachment,
 };

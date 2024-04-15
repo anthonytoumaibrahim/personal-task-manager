@@ -37,6 +37,24 @@ export const boardSlice = createSlice({
         ),
       };
     },
+    changeTaskColumn: (state, action) => {
+      const newColumn = action.payload.newColumn;
+      const { _id, oldColumn } = action.payload.task;
+      // Push task to new column
+      state.columns
+        .filter((col) => col._id === newColumn)?.[0]
+        ?.tasks?.push(action.payload.task);
+
+      // Remove task from old col
+      state.columns = state.columns.map((col) =>
+        col._id === oldColumn
+          ? {
+              ...col,
+              tasks: col.tasks.filter((task) => task._id !== _id),
+            }
+          : col
+      );
+    },
   },
 });
 

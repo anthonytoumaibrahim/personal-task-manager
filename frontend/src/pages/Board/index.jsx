@@ -36,6 +36,38 @@ const Board = () => {
       });
   };
 
+  const handleDrag = (e, task, oldColumn) => {
+    e.dataTransfer.setData(
+      "task",
+      JSON.stringify({ ...task, oldColumn: oldColumn })
+    );
+  };
+  const handleDrop = (e, newColumn) => {
+    const task = JSON.parse(e.dataTransfer.getData("task"));
+    if (newColumn === task.oldColumn) {
+      return;
+    }
+    sendRequest("POST", "/board/move-task", {
+      oldColumn: task.oldColumn,
+      newColumn: newColumn,
+      taskId: task._id,
+    });
+    dispatch({
+      type: "boardSlice/changeTaskColumn",
+      payload: {
+        newColumn: newColumn,
+        task: {
+          ...task,
+          column: newColumn,
+        },
+      },
+    });
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+  };
+
   useEffect(() => {
     getBoard();
   }, []);
@@ -74,18 +106,6 @@ const Board = () => {
         </Button>
       </div>
 
-      <div className="flex flex-wrap gap-2 items-center mb-4">
-        Tags
-        {boardSelector?.tags?.map((tag) => {
-          const { name } = tag;
-          return (
-            <Button small={true} fillType="outlined" className="border-gray-400 text-gray-400">
-              {name}
-            </Button>
-          );
-        })}
-      </div>
-
       <div className="grid grid-cols-3 gap-4">
         {boardSelector?.columns?.map((column) => {
           const { _id, name, board } = column;
@@ -94,6 +114,8 @@ const Board = () => {
             <div
               key={_id}
               className="p-4 h-[420px] overflow-auto bg-primary-50/40 rounded border border-gray-200"
+              onDragOver={handleDragOver}
+              onDrop={(e) => handleDrop(e, _id)}
             >
               <h4 className="mb-2">{name}</h4>
               <NewTask columnId={_id} />
@@ -105,6 +127,8 @@ const Board = () => {
                     <div
                       key={_id}
                       className="p-2 bg-white rounded shadow cursor-pointer transition-shadow duration-150 hover:shadow-md"
+                      draggable
+                      onDragStart={(e) => handleDrag(e, task, column._id)}
                       onClick={() =>
                         setOpenedTask({
                           columnId: column._id,

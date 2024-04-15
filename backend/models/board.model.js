@@ -41,8 +41,6 @@ const tagSchema = mongoose.Schema({
   name: {
     type: String,
     maxLength: 30,
-    unique: true,
-    index: true,
   },
   board: {
     type: mongoose.Schema.Types.ObjectId,
@@ -72,7 +70,6 @@ const boardSchema = mongoose.Schema(
       ref: "User",
     },
     columns: [{ type: mongoose.Schema.Types.ObjectId, ref: "Column" }],
-    tags: [{ type: mongoose.Schema.Types.ObjectId, ref: "Tag" }],
   },
   {
     timestamps: true,
