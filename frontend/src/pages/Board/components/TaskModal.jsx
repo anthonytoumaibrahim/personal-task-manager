@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useForm } from "react-hook-form";
 import { useRequest } from "../../../core/hooks/useRequest";
@@ -30,6 +30,8 @@ const TaskModal = ({
     formState: { errors },
   } = useForm();
   const [tags, setTags] = useState([]);
+
+  const uploaderRef = useRef(null);
 
   const saveTask = async (data) => {
     sendRequest("POST", `/board/${taskId}/update-task`, {
@@ -117,6 +119,9 @@ const TaskModal = ({
         <div className="flex flex-col gap-2">
           <label className="font-bold text-sm">Attachments</label>
           <div className="flex flex-wrap gap-2">
+            {taskSelector?.attachments?.length === 0 && (
+              <p>No attachments yet.</p>
+            )}
             {taskSelector?.attachments?.map((file) => {
               const { _id, filename, url } = file;
 
@@ -125,18 +130,32 @@ const TaskModal = ({
                   key={_id}
                   href={url}
                   target="_blank"
-                  className="flex items-center gap-2"
+                  className="flex items-center gap-2 max-w-52"
                 >
-                  <GrAttachment />
-                  {filename ?? "File"}
+                  <GrAttachment className="flex-shrink-0" />
+                  <span className="truncate">{filename ?? "File"}</span>
                 </a>
               );
             })}
           </div>
         </div>
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col items-start gap-2">
           <label className="font-bold text-sm">Upload Attachments</label>
-          <input type="file" onChange={handleFileUpload} multiple />
+          <Button
+            icon={GrAttachment}
+            fillType="outlined"
+            small={true}
+            onClick={() => uploaderRef.current.click()}
+          >
+            Upload Attachments
+          </Button>
+          <input
+            type="file"
+            onChange={handleFileUpload}
+            className="hidden"
+            ref={uploaderRef}
+            multiple
+          />
         </div>
         <Button className="mx-auto" type="submit">
           Save

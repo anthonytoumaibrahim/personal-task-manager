@@ -10,6 +10,7 @@ const {
   updateTask,
   moveTask,
   uploadAttachment,
+  deleteTask,
 } = require("../controllers/board.controller");
 const multer = require("multer");
 
@@ -31,6 +32,7 @@ router.post("/:boardId/add-column", addColumn);
 router.post("/:boardId/add-tag", addTag);
 router.post("/:columnId/add-task", addTask);
 router.post("/:taskId/update-task", updateTask);
+router.delete("/:taskId", deleteTask);
 router.post("/move-task", moveTask);
 router.post(
   "/:taskId/upload-attachment",

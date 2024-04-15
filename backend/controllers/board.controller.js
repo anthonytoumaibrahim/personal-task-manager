@@ -170,6 +170,20 @@ const addTask = async (req, res) => {
   }
 };
 
+const deleteTask = async (req, res) => {
+  const { taskId } = req.params;
+  try {
+    await Task.findByIdAndDelete(taskId);
+    return res.json({
+      success: true,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Internal Server Error.",
+    });
+  }
+};
+
 const updateTask = async (req, res) => {
   const { taskId } = req.params;
   const { title, description, boardId, tags } = req.body;
@@ -282,4 +296,5 @@ module.exports = {
   updateTask,
   moveTask,
   uploadAttachment,
+  deleteTask,
 };

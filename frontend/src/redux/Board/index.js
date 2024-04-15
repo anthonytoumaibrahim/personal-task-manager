@@ -55,6 +55,18 @@ export const boardSlice = createSlice({
         ),
       };
     },
+    deleteTask: (state, action) => {
+      const { columnId, taskId } = action.payload;
+
+      state.columns = state.columns.map((col) =>
+        col._id === columnId
+          ? {
+              ...col,
+              tasks: col.tasks.filter((task) => task._id !== taskId),
+            }
+          : col
+      );
+    },
     changeTaskColumn: (state, action) => {
       const newColumn = action.payload.newColumn;
       const { _id, oldColumn } = action.payload.task;

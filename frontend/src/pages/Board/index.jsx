@@ -7,7 +7,7 @@ import NewColumnModal from "./components/NewColumnModal";
 import TaskModal from "./components/TaskModal";
 import NewTask from "./components/NewTask";
 import Button from "../../components/Button";
-import { FaTableColumns } from "react-icons/fa6";
+import { FaTableColumns, FaTrash } from "react-icons/fa6";
 
 const Board = () => {
   const navigate = useNavigate();
@@ -68,6 +68,17 @@ const Board = () => {
     e.preventDefault();
   };
 
+  const deleteTask = (columnId, id) => {
+    sendRequest("DELETE", `/board/${id}`);
+    dispatch({
+      type: "boardSlice/deleteTask",
+      payload: {
+        columnId: columnId,
+        taskId: id,
+      },
+    });
+  };
+
   useEffect(() => {
     getBoard();
   }, []);
@@ -126,17 +137,25 @@ const Board = () => {
                   return (
                     <div
                       key={_id}
-                      className="p-2 bg-white rounded shadow cursor-pointer transition-shadow duration-150 hover:shadow-md"
+                      className="p-2 bg-white rounded shadow transition-shadow duration-150 hover:shadow-md flex justify-between items-center"
                       draggable
                       onDragStart={(e) => handleDrag(e, task, column._id)}
-                      onClick={() =>
-                        setOpenedTask({
-                          columnId: column._id,
-                          taskId: _id,
-                        })
-                      }
                     >
-                      <p className="font-medium">{title}</p>
+                      <div
+                        className="font-medium cursor-pointer w-full"
+                        onClick={() =>
+                          setOpenedTask({
+                            columnId: column._id,
+                            taskId: _id,
+                          })
+                        }
+                      >
+                        {title}
+                      </div>
+                      <FaTrash
+                        onClick={() => deleteTask(column._id, _id)}
+                        className="shrink-0 cursor-pointer text-rose-600 hover:text-rose-400"
+                      />
                     </div>
                   );
                 })}
