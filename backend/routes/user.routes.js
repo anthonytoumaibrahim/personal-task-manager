@@ -2,8 +2,8 @@ const express = require("express");
 
 const router = express.Router();
 
-const authMiddleware = require("../middlewares/auth.middleware");
+const { getStatistics } = require("../controllers/user.controller");
 
-// router.post("/login", authMiddleware);
+router.get("/statistics", getStatistics);
 
 module.exports = router;

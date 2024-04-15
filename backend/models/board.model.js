@@ -14,6 +14,14 @@ const attachmentSchema = mongoose.Schema(
   }
 );
 
+const tagSchema = mongoose.Schema({
+  name: {
+    type: String,
+    maxLength: 30,
+  },
+  task: { type: mongoose.Schema.Types.ObjectId, ref: "Task" },
+});
+
 const taskSchema = mongoose.Schema(
   {
     title: {
@@ -36,17 +44,6 @@ const taskSchema = mongoose.Schema(
     timestamps: true,
   }
 );
-
-const tagSchema = mongoose.Schema({
-  name: {
-    type: String,
-    maxLength: 30,
-  },
-  board: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Board",
-  },
-});
 
 const columnSchema = mongoose.Schema(
   {
