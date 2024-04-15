@@ -67,6 +67,10 @@ export const boardSlice = createSlice({
           : col
       );
     },
+    deleteColumn: (state, action) => {
+      const id = action.payload;
+      state.columns = state.columns.filter((col) => col._id !== id);
+    },
     changeTaskColumn: (state, action) => {
       const newColumn = action.payload.newColumn;
       const { _id, oldColumn } = action.payload.task;

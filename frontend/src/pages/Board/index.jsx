@@ -8,6 +8,7 @@ import TaskModal from "./components/TaskModal";
 import NewTask from "./components/NewTask";
 import Button from "../../components/Button";
 import { FaTableColumns, FaTrash } from "react-icons/fa6";
+import { FaTimes } from "react-icons/fa";
 
 const Board = () => {
   const navigate = useNavigate();
@@ -69,13 +70,21 @@ const Board = () => {
   };
 
   const deleteTask = (columnId, id) => {
-    sendRequest("DELETE", `/board/${id}`);
+    sendRequest("DELETE", `/board/task/${id}`);
     dispatch({
       type: "boardSlice/deleteTask",
       payload: {
         columnId: columnId,
         taskId: id,
       },
+    });
+  };
+
+  const deleteColumn = (columnId) => {
+    sendRequest("DELETE", `/board/${columnId}`);
+    dispatch({
+      type: "boardSlice/deleteColumn",
+      payload: columnId,
     });
   };
 
@@ -128,7 +137,13 @@ const Board = () => {
               onDragOver={handleDragOver}
               onDrop={(e) => handleDrop(e, _id)}
             >
-              <h4 className="mb-2">{name}</h4>
+              <div className="mb-2 flex items-center justify-between gap-2">
+                <h4 className="w-full truncate">{name}</h4>
+                <FaTrash
+                  onClick={() => deleteColumn(_id)}
+                  className="shrink-0 cursor-pointer text-rose-600 hover:text-rose-400"
+                />
+              </div>
               <NewTask columnId={_id} />
 
               <div className="flex flex-col gap-2">
@@ -137,12 +152,12 @@ const Board = () => {
                   return (
                     <div
                       key={_id}
-                      className="p-2 bg-white rounded shadow transition-shadow duration-150 hover:shadow-md flex justify-between items-center"
+                      className="p-2 bg-white rounded shadow transition-shadow duration-150 hover:shadow-md flex justify-between items-center gap-2 group"
                       draggable
                       onDragStart={(e) => handleDrag(e, task, column._id)}
                     >
                       <div
-                        className="font-medium cursor-pointer w-full"
+                        className="font-medium cursor-pointer w-full truncate"
                         onClick={() =>
                           setOpenedTask({
                             columnId: column._id,
@@ -152,9 +167,9 @@ const Board = () => {
                       >
                         {title}
                       </div>
-                      <FaTrash
+                      <FaTimes
                         onClick={() => deleteTask(column._id, _id)}
-                        className="shrink-0 cursor-pointer text-rose-600 hover:text-rose-400"
+                        className="shrink-0 cursor-pointer text-rose-600 hover:text-rose-400 opacity-0 group-hover:opacity-100"
                       />
                     </div>
                   );
