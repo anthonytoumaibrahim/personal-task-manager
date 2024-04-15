@@ -92,4 +92,14 @@ export const boardSlice = createSlice({
   },
 });
 
-export const { setPost } = boardSlice.actions;
+export const {
+  setPost,
+  addColumn,
+  addTask,
+  changeTaskColumn,
+  deleteColumn,
+  deleteTask,
+  setAttachments,
+  setBoard,
+  updateTask,
+} = boardSlice.actions;

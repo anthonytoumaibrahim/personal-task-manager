@@ -198,6 +198,20 @@ const deleteColumn = async (req, res) => {
   }
 };
 
+const deleteBoard = async (req, res) => {
+  const { boardId } = req.params;
+  try {
+    await Board.findByIdAndDelete(boardId);
+    return res.json({
+      success: true,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Internal Server Error.",
+    });
+  }
+};
+
 const updateTask = async (req, res) => {
   const { taskId } = req.params;
   const { title, description, boardId, tags } = req.body;
@@ -312,4 +326,5 @@ module.exports = {
   uploadAttachment,
   deleteTask,
   deleteColumn,
+  deleteBoard,
 };

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useRequest } from "../../core/hooks/useRequest";
 import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
 
 import NewColumnModal from "./components/NewColumnModal";
 import TaskModal from "./components/TaskModal";
@@ -70,7 +71,9 @@ const Board = () => {
   };
 
   const deleteTask = (columnId, id) => {
-    sendRequest("DELETE", `/board/task/${id}`);
+    sendRequest("DELETE", `/board/task/${id}`).catch((error) =>
+      toast.error(error)
+    );
     dispatch({
       type: "boardSlice/deleteTask",
       payload: {
@@ -81,7 +84,9 @@ const Board = () => {
   };
 
   const deleteColumn = (columnId) => {
-    sendRequest("DELETE", `/board/${columnId}`);
+    sendRequest("DELETE", `/board/column/${columnId}`).catch((error) =>
+      toast.error(error)
+    );
     dispatch({
       type: "boardSlice/deleteColumn",
       payload: columnId,
@@ -126,7 +131,7 @@ const Board = () => {
         </Button>
       </div>
 
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
         {boardSelector?.columns?.map((column) => {
           const { _id, name, board } = column;
 

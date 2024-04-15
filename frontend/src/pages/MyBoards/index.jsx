@@ -50,7 +50,10 @@ const MyBoards = () => {
         </Button>
       </div>
 
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
+        {boardsSelector.length === 0 && (
+          <p>No boards to show. Create one now!</p>
+        )}
         {boardsSelector.map((board) => {
           const { _id, name } = board;
           return <Board key={_id} id={_id} name={name} />;

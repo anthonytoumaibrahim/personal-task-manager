@@ -12,7 +12,10 @@ export const boardsSlice = createSlice({
     addBoard: (state, action) => {
       return [...state, action.payload];
     },
+    removeBoard: (state, action) => {
+      return state.filter((board) => board._id !== action.payload);
+    },
   },
 });
 
-export const { setBoards } = boardsSlice.actions;
+export const { setBoards, addBoard, removeBoard } = boardsSlice.actions;
