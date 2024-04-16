@@ -30,7 +30,7 @@ const getBoard = async (req, res) => {
       path: "columns",
       populate: {
         path: "tasks",
-        populate: "attachments",
+        populate: ["attachments", "tags"],
       },
     });
 
@@ -100,38 +100,6 @@ const addColumn = async (req, res) => {
       column: savedCol,
     });
   } catch (error) {
-    return res.status(500).json({
-      message: "Internal Server Error.",
-    });
-  }
-};
-
-const addTag = async (req, res) => {
-  const { boardId } = req.params;
-  const { name } = req.body;
-  try {
-    const board = await Board.findById(boardId);
-
-    if (!board) {
-      return res.status(422).json({
-        message: "Board not found.",
-        board: boardId,
-      });
-    }
-
-    const newTag = new Tag({
-      name: name,
-    });
-    const savedTag = await newTag.save();
-
-    board.tags.push(savedTag._id);
-    await board.save();
-
-    return res.json({
-      tag: savedTag,
-    });
-  } catch (error) {
-    console.log(error);
     return res.status(500).json({
       message: "Internal Server Error.",
     });
@@ -214,31 +182,30 @@ const deleteBoard = async (req, res) => {
 
 const updateTask = async (req, res) => {
   const { taskId } = req.params;
-  const { title, description, boardId, tags } = req.body;
+  const { title, description, tags } = req.body;
   try {
     const task = await Task.findById(taskId);
     task.title = title;
     task.description = description;
     await task.save();
 
-    const board = await Board.findById(boardId);
-
-    tags.forEach(async (tag) => {
-      const foundTag = await Tag.findOne({ name: tag });
+    for (let i = 0; i < tags.length; i++) {
+      const { name } = tags[i];
+      const foundTag = await Tag.findOne({
+        name: name,
+        task: taskId,
+      });
       if (!foundTag) {
         const newTag = new Tag({
-          name: tag,
-          board: boardId,
+          name: name,
+          task: taskId,
         });
         await newTag.save();
-
-        board.tags.push(newTag._id);
-        await board.save();
 
         task.tags.push(newTag._id);
         await task.save();
       }
-    });
+    }
 
     return res.json({
       success: true,
@@ -319,7 +286,6 @@ module.exports = {
   getBoard,
   createBoard,
   addColumn,
-  addTag,
   addTask,
   updateTask,
   moveTask,

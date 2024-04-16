@@ -29,15 +29,26 @@ const TaskModal = ({
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const [tags, setTags] = useState([]);
+  const [tagInput, setTagInput] = useState("");
 
   const uploaderRef = useRef(null);
+
+  const addTag = () => {
+    dispatch({
+      type: "boardSlice/addTag",
+      payload: {
+        columnId: columnId,
+        taskId: taskId,
+        tag: tagInput,
+      },
+    });
+    setTagInput("");
+  };
 
   const saveTask = async (data) => {
     sendRequest("POST", `/board/${taskId}/update-task`, {
       ...data,
-      boardId: boardId,
-      tags: [],
+      tags: taskSelector?.tags,
     })
       .then((response) => {
         const { success, message } = response.data;
@@ -95,7 +106,7 @@ const TaskModal = ({
         className="flex flex-col gap-4"
         onSubmit={handleSubmit(saveTask)}
       >
-        <div>
+        <div className="flex flex-col gap-1">
           <label className="font-bold text-sm">Title</label>
           <Input
             placeholder="Task Name"
@@ -108,7 +119,7 @@ const TaskModal = ({
             })}
           />
         </div>
-        <div>
+        <div className="flex flex-col gap-1">
           <label className="font-bold text-sm">Description</label>
           <Input
             as="textarea"
@@ -120,6 +131,32 @@ const TaskModal = ({
               maxLength: 150,
             })}
           />
+        </div>
+        <div className="flex flex-col gap-1">
+          <label className="font-bold text-sm">Tags</label>
+          <div className="flex gap-2">
+            {taskSelector?.tags?.map((tag, index) => {
+              const { name } = tag;
+              return (
+                <span
+                  key={index}
+                  className="text-sm px-2 py-1 rounded bg-gray-100 border"
+                >
+                  {name}
+                </span>
+              );
+            })}
+          </div>
+          <div>
+            <Input
+              placeholder="e.g: todo, done, to be approved"
+              className="rounded-r-none border-r-0"
+              onChange={(e) => setTagInput(e.target.value)}
+            />
+            <Button type="button" className="rounded-l-none" onClick={addTag}>
+              Add
+            </Button>
+          </div>
         </div>
         <div className="flex flex-col gap-2">
           <label className="font-bold text-sm">Attachments</label>
@@ -144,24 +181,22 @@ const TaskModal = ({
             })}
           </div>
         </div>
-        <div className="flex flex-col items-start gap-2">
-          <label className="font-bold text-sm">Upload Attachments</label>
-          <Button
-            icon={GrAttachment}
-            fillType="outlined"
-            small={true}
-            onClick={() => uploaderRef.current.click()}
-          >
-            Upload Attachments
-          </Button>
-          <input
-            type="file"
-            onChange={handleFileUpload}
-            className="hidden"
-            ref={uploaderRef}
-            multiple
-          />
-        </div>
+        <Button
+          icon={GrAttachment}
+          fillType="outlined"
+          small={true}
+          onClick={() => uploaderRef.current.click()}
+          className="mr-auto"
+        >
+          Upload Attachments
+        </Button>
+        <input
+          type="file"
+          onChange={handleFileUpload}
+          className="hidden"
+          ref={uploaderRef}
+          multiple
+        />
         <Button className="mx-auto" type="submit">
           Save
         </Button>
