@@ -8,7 +8,7 @@ const CustomNavLink = ({ to = "/", className = "", children }) => {
         `!no-underline ${
           isActive
             ? "font-medium text-primary-600 relative after:absolute after:-bottom-0.5 after:left-0 after:w-full after:h-0.5 after:bg-primary-600"
-            : "text-black"
+            : "text-black hover:text-primary-600"
         } ${className}`
       }
       end

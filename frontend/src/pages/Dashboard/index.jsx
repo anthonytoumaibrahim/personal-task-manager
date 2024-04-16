@@ -1,4 +1,7 @@
 import { useRequest } from "../../core/hooks/useRequest";
+import { Link } from "react-router-dom";
+
+import { FaArrowRightLong } from "react-icons/fa6";
 
 // Charts
 import {
@@ -81,8 +84,12 @@ const Dashboard = () => {
 
   return (
     <div>
-      <h2>Statistics</h2>
+      <h2>Overview</h2>
       <Line options={options} data={data} />
+
+      <Link to="/boards" className="mt-4 flex items-center gap-2 justify-end">
+        Go to my Boards <FaArrowRightLong />
+      </Link>
     </div>
   );
 };
