@@ -11,7 +11,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
 
 ChartJS.register(
@@ -24,46 +24,55 @@ ChartJS.register(
   Legend
 );
 
-const options = {
-  responsive: true,
-  plugins: {
-    legend: {
-      position: "top",
-    },
-    title: {
-      display: true,
-      text: "Chart.js Line Chart",
-    },
-  },
-};
-
-const labels = ["January", "February", "March", "April", "May", "June", "July"];
-
-const data = {
-  labels,
-  datasets: [
-    {
-      label: "Dataset 1",
-      data: labels.map(() => 22),
-      borderColor: "rgb(255, 99, 132)",
-      backgroundColor: "rgba(255, 99, 132, 0.5)",
-    },
-    {
-      label: "Dataset 2",
-      data: labels.map(() => 33),
-      borderColor: "rgb(53, 162, 235)",
-      backgroundColor: "rgba(53, 162, 235, 0.5)",
-    },
-  ],
-};
-
 const Dashboard = () => {
   const sendRequest = useRequest();
+  const [chartData, setChartData] = useState({
+    labels: [],
+    tasks: {},
+  });
 
   const getStatistics = () => {
     sendRequest("GET", "/user/statistics")
-      .then((response) => console.log(response.data))
+      .then((response) => {
+        const { labels, counts } = response.data;
+        setChartData({
+          labels: labels,
+          tasks: counts,
+        });
+      })
       .catch((error) => console.log(error));
+  };
+
+  const options = {
+    responsive: true,
+    scale: {
+      ticks: {
+        precision: 0,
+      },
+    },
+    plugins: {
+      legend: {
+        position: "top",
+      },
+      title: {
+        display: true,
+        text: "My Tasks' Statistics",
+      },
+    },
+  };
+
+  const labels = chartData.labels;
+
+  const data = {
+    labels,
+    datasets: [
+      {
+        label: "Tasks Created",
+        data: labels.map((date) => chartData?.tasks?.[date]),
+        borderColor: "rgb(79, 70, 229)",
+        backgroundColor: "rgba(79, 70, 229, 0.5)",
+      },
+    ],
   };
 
   useEffect(() => {

@@ -25,7 +25,13 @@ const storage = multer.diskStorage({
   },
 });
 
-const upload = multer({ storage: storage, dest: "uploads/" });
+const upload = multer({
+  storage: storage,
+  dest: "uploads/",
+  limits: {
+    fileSize: 2097152,
+  },
+});
 
 router.get("/", getBoards);
 router.post("/", createBoard);

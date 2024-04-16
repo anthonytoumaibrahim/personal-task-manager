@@ -42,7 +42,7 @@ const AuthenticationForm = () => {
         }
       })
       .catch((error) => {
-        const { message } = error?.response?.data || {};
+        const message = error?.response?.data?.message;
         toast.error(message ?? "Sorry, something went wrong.");
       })
       .finally(() => setIsLoading(false));

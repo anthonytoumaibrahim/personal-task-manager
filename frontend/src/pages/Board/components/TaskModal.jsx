@@ -63,7 +63,10 @@ const TaskModal = ({
     const files = e.target.files;
     const form = new FormData();
     for (let i = 0; i < files.length; i++) {
-      form.append(`attachments`, files[i]);
+      const file = files[i];
+      if (file.size <= 2097152) {
+        form.append(`attachments`, files[i]);
+      }
     }
     sendRequest("POST", `/board/${taskId}/upload-attachment`, form)
       .then((response) => {
@@ -78,7 +81,9 @@ const TaskModal = ({
         });
       })
       .catch((error) => {
-        toast.error(error);
+        toast.error(
+          "Sorry, your file could not be uploaded. Make sure it's smaller than 2 MB."
+        );
         console.log(error);
       });
   };

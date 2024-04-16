@@ -118,8 +118,8 @@ const Board = () => {
           }
         />
       )}
-      <div className="flex justify-between items-center mb-4">
-        <div className="flex items-center gap-2">
+      <div className="flex max-sm:flex-col gap-2 justify-between items-center mb-4">
+        <div className="flex items-center max-sm:text-center gap-2">
           <Link to="/boards">My Boards</Link> / <h3>{boardSelector.name}</h3>
         </div>
         <Button
